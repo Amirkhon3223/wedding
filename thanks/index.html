@@ -427,40 +427,12 @@ function closeIntro(){
 const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible')})},{threshold:.12});
 document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
 
-// Reverse transliteration Latin → Cyrillic
+// Guest name from hash: #Имя
 (function(){
-  const hash = location.hash.substring(1);
+  const hash = decodeURIComponent(location.hash.substring(1));
   if(!hash){document.getElementById('guestName').textContent='Дорогие наши!';return}
-
-  // Multi-char replacements first, then single
-  const MAP = [
-    ['Zh','Ж'],['Sh','Ш'],['Ch','Ч'],['Yo','Ё'],['Yu','Ю'],['Ya','Я'],['Eh','Э'],
-    ['zh','ж'],['sh','ш'],['ch','ч'],['yo','ё'],['yu','ю'],['ya','я'],['eh','э'],
-    ['+', ' '],
-    ['A','А'],['B','Б'],['V','В'],['G','Г'],['D','Д'],['E','Е'],
-    ['Z','З'],['I','И'],['J','Й'],['K','К'],['L','Л'],['M','М'],
-    ['N','Н'],['O','О'],['P','П'],['R','Р'],['S','С'],['T','Т'],
-    ['U','У'],['F','Ф'],['X','Х'],['C','Ц'],['W','Щ'],['Y','Ы'],
-    ['a','а'],['b','б'],['v','в'],['g','г'],['d','д'],['e','е'],
-    ['z','з'],['i','и'],['j','й'],['k','к'],['l','л'],['m','м'],
-    ['n','н'],['o','о'],['p','п'],['r','р'],['s','с'],['t','т'],
-    ['u','у'],['f','ф'],['x','х'],['c','ц'],['w','щ'],['y','ы'],
-  ];
-
-  let name = hash;
-  // Process multi-char first (2-char sequences)
-  for(const [lat,cyr] of MAP){
-    if(lat.length > 1) name = name.split(lat).join(cyr);
-  }
-  // Then single chars
-  let result = '';
-  for(let i=0; i<name.length; i++){
-    const ch = name[i];
-    const found = MAP.find(m => m.length && m[0].length === 1 && m[0] === ch);
-    result += found ? found[1] : ch;
-  }
-
-  document.getElementById('guestName').textContent = result + '!';
+  const name = hash.replace(/\+/g,' ');
+  document.getElementById('guestName').textContent = name + '!';
 })();
 </script>
 </body>
